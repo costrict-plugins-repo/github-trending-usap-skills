@@ -1,0 +1,100 @@
+{
+  "agent_slug": "containment-advisor",
+  "intent_type": "respond",
+  "action": "Request approval (soc_lead, ciso) for: Block the source IP at the perimeter or WAF on payments-api-03 (10.20.8.13) [network_change, immediate, production impact outage, reversibility immediate]. Then: Isolate the affected host from its network segment.",
+  "rationale": "Strategy selected from the SKILL.md table for network_intrusion; urgency from active/spreading flags and severity; production impact from the service tier and action class; reversibility by mutating category. Every state-changing step is an intent block with requires_approval true and approver roles soc_lead and ciso; no command syntax is emitted. Attack paths are labelled CONFIRMED, PLAUSIBLE or PREREQUISITE_UNVERIFIED.",
+  "confidence": 0.81,
+  "severity": "critical",
+  "key_findings": [
+    "CA-20260904-0031: threat type network_intrusion, severity critical, urgency immediate, blast radius 1 host(s), 1 account(s); production service payments-api",
+    "mutating / network_change: Block the source IP at the perimeter or WAF -> impact outage, reversibility immediate, approval True",
+    "mutating / network_change: Isolate the affected host from its network segment -> impact outage, reversibility immediate, approval True",
+    "Attack path to payments-db (PostgreSQL, 10.20.9.0/24): PLAUSIBLE (database credentials readable from the compromised host)",
+    "Attack path to AWS control plane (payments account): PREREQUISITE_UNVERIFIED (IAM credentials or instance role reachable via IMDS from the host)"
+  ],
+  "evidence_references": [
+    {
+      "source": "local://tests/fixtures/containment-advisor-input.json",
+      "ref": "CA-20260904-0031",
+      "quote": "Web shell on payments-api-03 executing commands as www-data; C2 beacons every 300 s to 185.220.101.47; attempted SSH from the host to the database subnet."
+    },
+    {
+      "source": "local://response/containment-advisor/SKILL.md",
+      "ref": "containment strategy table, scope assessment, prerequisite validation"
+    },
+    {
+      "source": "https://attack.mitre.org/techniques/T1190/",
+      "ref": "T1190"
+    }
+  ],
+  "next_agents": [],
+  "human_approval_required": true,
+  "timestamp_utc": "2026-09-05T07:33:20Z",
+  "containment": {
+    "threat_type": "network_intrusion",
+    "urgency": "immediate",
+    "blast_radius": "1 host(s), 1 account(s); production service payments-api",
+    "intents": [
+      {
+        "containment_intent": "Block the source IP at the perimeter or WAF",
+        "intent_type": "mutating",
+        "mutating_category": "network_change",
+        "target_resource": "payments-api-03 (10.20.8.13)",
+        "blast_radius": "1 host(s), 1 account(s); production service payments-api",
+        "production_impact": "outage",
+        "reversibility": "immediate",
+        "urgency": "immediate",
+        "requires_approval": true,
+        "approver_roles": [
+          "soc_lead",
+          "ciso"
+        ],
+        "executor": "tool-execution-broker"
+      },
+      {
+        "containment_intent": "Isolate the affected host from its network segment",
+        "intent_type": "mutating",
+        "mutating_category": "network_change",
+        "target_resource": "payments-api-03 (10.20.8.13)",
+        "blast_radius": "1 host(s), 1 account(s); production service payments-api",
+        "production_impact": "outage",
+        "reversibility": "immediate",
+        "urgency": "urgent",
+        "requires_approval": true,
+        "approver_roles": [
+          "soc_lead",
+          "ciso"
+        ],
+        "executor": "tool-execution-broker"
+      }
+    ],
+    "attack_paths": [
+      {
+        "target": "payments-db (PostgreSQL, 10.20.9.0/24)",
+        "label": "PLAUSIBLE",
+        "prerequisite": "database credentials readable from the compromised host"
+      },
+      {
+        "target": "AWS control plane (payments account)",
+        "label": "PREREQUISITE_UNVERIFIED",
+        "prerequisite": "IAM credentials or instance role reachable via IMDS from the host"
+      }
+    ],
+    "approver_roles": [
+      "soc_lead",
+      "ciso"
+    ]
+  },
+  "mutating_category": "network_change",
+  "approver_roles": [
+    "soc_lead",
+    "ciso"
+  ],
+  "mitre_ttps": [
+    "T1190"
+  ],
+  "affected_assets": [
+    "payments-api-03",
+    "www-data@payments-api-03"
+  ]
+}

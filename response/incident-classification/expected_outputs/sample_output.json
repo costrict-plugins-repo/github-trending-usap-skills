@@ -1,0 +1,53 @@
+{
+  "agent_slug": "incident-classification",
+  "intent_type": "analyze",
+  "action": "Route to immediate response: L3 -> L2 -> L1 (immediate cascade). Incident type privilege_escalation, severity critical (input said high). Containment options belong to containment-advisor.",
+  "rationale": "Type matched on event_type then keywords against the 14-type taxonomy; severity is the highest of the input severity, the type's default floor and the pre-analysis inference, raised to critical on confirmed impact or spread. Confidence = source credibility x match quality, minus 0.20 per false-positive indicator category hit; the flag is set on two or more hits or any whitelist hit. Read-only; no containment recommended.",
+  "confidence": 0.84,
+  "severity": "critical",
+  "key_findings": [
+    "IC-20260904-0112 from cloudtrail-analytics (credibility 0.91): classified privilege_escalation, severity critical, differs from input high",
+    "NIST phase Analysis, category Privilege Escalation; escalation L3 -> L2 -> L1 (immediate cascade); response category immediate_response",
+    "False-positive indicators: 0 of 5 categories (none); false_positive_flag=false",
+    "Finding: AssumeRole chain from role ci-deploy to OrganizationAccountAccessRole followed by iam:AttachUserPolicy AdministratorAccess on a newly created user, from an IP never seen for this principal, in the pro"
+  ],
+  "evidence_references": [
+    {
+      "source": "local://tests/fixtures/incident-classification-input.json",
+      "ref": "IC-20260904-0112",
+      "quote": "AssumeRole chain from role ci-deploy to OrganizationAccountAccessRole followed by iam:AttachUserPolicy AdministratorAccess on a newly created user, from an IP n"
+    },
+    {
+      "source": "https://attack.mitre.org/techniques/T1068/",
+      "ref": "T1068"
+    },
+    {
+      "source": "local://response/incident-classification/SKILL.md",
+      "ref": "incident taxonomy, severity matrix, false-positive indicators, escalation routing"
+    }
+  ],
+  "next_agents": [
+    "incident-commander",
+    "containment-advisor"
+  ],
+  "human_approval_required": false,
+  "timestamp_utc": "2026-09-05T07:26:28Z",
+  "classification": {
+    "incident_type": "privilege_escalation",
+    "input_severity": "high",
+    "severity_assessment": "critical",
+    "severity_differs": true,
+    "nist_phase": "Analysis",
+    "category": "Privilege Escalation",
+    "false_positive_flag": false,
+    "false_positive_indicators": [],
+    "escalation_recommendation": "L3 -> L2 -> L1 (immediate cascade)",
+    "response_category": "immediate_response"
+  },
+  "mitre_ttps": [
+    "T1068"
+  ],
+  "affected_assets": [
+    "prod-payer"
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "agent_slug": "threat-hunting",
+  "intent_type": "escalate",
+  "action": "Escalate HUNT-2026-031 to incident-commander now: 2 entity/entities corroborated by two or more sources, estimated dwell 12.4 days (7-30 days). Evidence scope: 90-day lookback + backup media. Containment options are the incident commander's decision, not this hunt's.",
+  "rationale": "Verdict rule: confirmed needs two or more independent sources on the same entity; a single source is a watchlist item; a clean verdict requires every required data source healthy within 24 h of the window end, otherwise inconclusive. Dwell from the earliest corroborated indicator to the window end. Confidence factors: base 0.50, two or more independent sources agree (+0.30), 1 data gap(s) (-0.10).",
+  "confidence": 0.7,
+  "severity": "critical",
+  "key_findings": [
+    "HUNT-2026-031 (2026-S18): hypothesis priority 11 (pursue); 5 observation(s) over 3 entity/entities; sources healthy 3, gaps 1; verdict confirmed",
+    "Hypothesis: An intrusion set using WMI for lateral movement (T1047) would produce wmiprvse.exe spawning powershell.exe in EDR process telemetry and network logons (4624 type 3) from a single source host across the finance segment between 2026-08-20 and 2026-09-03.",
+    "CONFIRMED FIN-WS-114: 2 sources (EDR, Windows authentication), techniques T1047, earliest 2026-08-22T14:02:58Z",
+    "CONFIRMED FIN-WS-121: 2 sources (EDR, Windows authentication), techniques T1021.002, T1047, earliest 2026-08-25T09:41:12Z",
+    "unconfirmed FIN-SRV-02: single source DNS; watchlist",
+    "Dwell estimate 12.4 days -> 7-30 days: high, lateral movement likely; 90-day lookback + backup media",
+    "Data gap(s): Proxy (last event 2026-09-01T02:10:00Z); clean verdict not available for the affected period"
+  ],
+  "evidence_references": [
+    {
+      "source": "local://tests/fixtures/threat-hunting-input.json",
+      "ref": "FIN-WS-114",
+      "quote": "EDR: wmiprvse.exe -> powershell.exe -nop -w hidden -enc ... (wmi_lateral_movement); Windows authentication: 4624 logon type 3 from 10.20.4.17 (FIN-SRV-02) then 4688 wmic process call create (wmi_lateral_movement)"
+    },
+    {
+      "source": "local://tests/fixtures/threat-hunting-input.json",
+      "ref": "FIN-WS-121",
+      "quote": "EDR: wmiprvse.exe -> powershell.exe -enc ... (wmi_lateral_movement); Windows authentication: 4624 logon type 3 from 10.20.4.17 (FIN-SRV-02) (wmi_lateral_movement)"
+    },
+    {
+      "source": "local://tests/fixtures/threat-hunting-input.json",
+      "ref": "FIN-SRV-02",
+      "quote": "DNS: periodic queries to update-cdn-metrics.example every 300 s, domain registered 2026-08-10 (beaconing)"
+    },
+    {
+      "source": "https://attack.mitre.org/techniques/T1021/002/",
+      "ref": "T1021.002"
+    },
+    {
+      "source": "https://attack.mitre.org/techniques/T1047/",
+      "ref": "T1047"
+    },
+    {
+      "source": "https://attack.mitre.org/techniques/T1059/001/",
+      "ref": "T1059.001"
+    },
+    {
+      "source": "local://detection/threat-hunting/references/hunt-playbooks.md",
+      "ref": "playbooks and dwell-time brackets"
+    }
+  ],
+  "next_agents": [
+    "incident-commander",
+    "detection-engineering",
+    "telemetry-signal-quality"
+  ],
+  "human_approval_required": false,
+  "timestamp_utc": "2026-09-05T07:25:38Z",
+  "hunt": {
+    "hunt_id": "HUNT-2026-031",
+    "verdict": "confirmed",
+    "hypothesis_priority": 11,
+    "pursue": true,
+    "window": {
+      "start": "2026-08-20T00:00:00Z",
+      "end": "2026-09-03T23:59:59Z"
+    },
+    "sources_healthy": [
+      "EDR",
+      "Windows authentication",
+      "DNS"
+    ],
+    "data_gaps": [
+      "Proxy (last event 2026-09-01T02:10:00Z)"
+    ],
+    "confirmed_entities": [
+      {
+        "entity": "FIN-WS-114",
+        "sources": [
+          "EDR",
+          "Windows authentication"
+        ],
+        "techniques": [
+          "T1047"
+        ],
+        "earliest_indicator_utc": "2026-08-22T14:02:58Z"
+      },
+      {
+        "entity": "FIN-WS-121",
+        "sources": [
+          "EDR",
+          "Windows authentication"
+        ],
+        "techniques": [
+          "T1021.002",
+          "T1047"
+        ],
+        "earliest_indicator_utc": "2026-08-25T09:41:12Z"
+      }
+    ],
+    "watchlist_entities": [
+      "FIN-SRV-02"
+    ],
+    "estimated_dwell_days": 12.4,
+    "dwell": {
+      "bracket": "7-30 days",
+      "blast_radius": "high, lateral movement likely",
+      "evidence_scope": "90-day lookback + backup media"
+    },
+    "ioc_matches": 0
+  },
+  "mitre_ttps": [
+    "T1021.002",
+    "T1047",
+    "T1059.001"
+  ],
+  "affected_assets": [
+    "FIN-WS-114",
+    "FIN-WS-121",
+    "FIN-SRV-02"
+  ]
+}

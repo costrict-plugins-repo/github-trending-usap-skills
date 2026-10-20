@@ -1,0 +1,171 @@
+{
+  "agent_slug": "compliance-mapping",
+  "intent_type": "report",
+  "action": "Prepare notifications for human filing: PCI-DSS to Acquiring bank and card brands by 2026-09-04T09:30:00Z; NIS2 early warning to National CSIRT or competent authority by 2026-09-05T09:30:00Z; GDPR Art 33 to Supervisory authority by 2026-09-07T09:30:00Z. Materiality: material: confirmed breach involving regulated data; notification obligations apply.",
+  "rationale": "Frameworks from the SKILL.md trigger matrix filtered by the data types and entity scope stated in the incident (never assumed); deadlines from the awareness timestamp; control failures from the indicator table; materiality from confirmation status and regulated-data involvement. Read-only: notifications are drafted for a human to file. Confidence factors: base 0.60, data types stated (+0.15), entity scope stated (+0.10), awareness timestamp supplied (+0.05).",
+  "confidence": 0.9,
+  "severity": "critical",
+  "key_findings": [
+    "INC-2026-0912: data_exfiltration at 2026-09-04T09:30:00Z triggers GDPR, CCPA, PCI-DSS, NIS2; data cardholder, pii; 41800 record(s)",
+    "GDPR: personal data of EU residents involved or possible",
+    "CCPA: California residents' personal information",
+    "PCI-DSS: cardholder data environment",
+    "NIS2: NIS2 essential or important entity",
+    "Deadline GDPR Art 33: 2026-09-07T09:30:00Z (Supervisory authority)",
+    "Deadline GDPR Art 34: without undue delay (Affected individuals, without undue delay, if high risk)",
+    "Deadline CCPA: 2026-10-19T09:30:00Z (Affected California residents)",
+    "Deadline PCI-DSS: 2026-09-04T09:30:00Z (Acquiring bank and card brands)",
+    "Deadline NIS2 early warning: 2026-09-05T09:30:00Z (National CSIRT or competent authority)",
+    "Deadline NIS2 full notification: 2026-09-07T09:30:00Z (National CSIRT or competent authority)",
+    "Control failure: Access control (ISO 27001 A.9.2, SOC 2 CC6.3, PCI-DSS Req 7)",
+    "Control failure: Authentication control (SOC 2 CC6.1, ISO 27001 A.9.4, PCI-DSS Req 8.3)",
+    "Control failure: Data loss prevention (GDPR Art 32, ISO 27001 A.13)",
+    "Control failure: Audit logging (PCI-DSS Req 10, ISO 27001 A.12.4)",
+    "Materiality: material: confirmed breach involving regulated data; notification obligations apply"
+  ],
+  "evidence_references": [
+    {
+      "source": "local://tests/fixtures/compliance-mapping-input.json",
+      "ref": "INC-2026-0912",
+      "quote": "data_exfiltration; data types cardholder, pii"
+    },
+    {
+      "source": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "ref": "GDPR",
+      "quote": "personal data of EU residents involved or possible"
+    },
+    {
+      "source": "https://oag.ca.gov/privacy/ccpa",
+      "ref": "CCPA",
+      "quote": "California residents' personal information"
+    },
+    {
+      "source": "https://www.pcisecuritystandards.org/",
+      "ref": "PCI-DSS",
+      "quote": "cardholder data environment"
+    },
+    {
+      "source": "https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "ref": "NIS2",
+      "quote": "NIS2 essential or important entity"
+    },
+    {
+      "source": "local://risk-compliance/compliance-mapping/SKILL.md",
+      "ref": "trigger matrix, deadline calculator, control failure classification"
+    }
+  ],
+  "next_agents": [
+    "ciso-brief-generator",
+    "findings-tracker"
+  ],
+  "human_approval_required": false,
+  "timestamp_utc": "2026-09-05T07:34:09Z",
+  "compliance_summary": {
+    "incident_type": "data_exfiltration",
+    "frameworks_triggered": [
+      "GDPR",
+      "CCPA",
+      "PCI-DSS",
+      "NIS2"
+    ],
+    "trigger_reasons": {
+      "GDPR": "personal data of EU residents involved or possible",
+      "CCPA": "California residents' personal information",
+      "PCI-DSS": "cardholder data environment",
+      "NIS2": "NIS2 essential or important entity"
+    },
+    "notification_deadlines": [
+      {
+        "framework": "GDPR",
+        "obligation": "GDPR Art 33",
+        "hours": 72,
+        "deadline_utc": "2026-09-07T09:30:00Z",
+        "recipient": "Supervisory authority"
+      },
+      {
+        "framework": "GDPR",
+        "obligation": "GDPR Art 34",
+        "hours": null,
+        "deadline_utc": "without undue delay",
+        "recipient": "Affected individuals, without undue delay, if high risk"
+      },
+      {
+        "framework": "CCPA",
+        "obligation": "CCPA",
+        "hours": 1080,
+        "deadline_utc": "2026-10-19T09:30:00Z",
+        "recipient": "Affected California residents"
+      },
+      {
+        "framework": "PCI-DSS",
+        "obligation": "PCI-DSS",
+        "hours": 0,
+        "deadline_utc": "2026-09-04T09:30:00Z",
+        "recipient": "Acquiring bank and card brands"
+      },
+      {
+        "framework": "NIS2",
+        "obligation": "NIS2 early warning",
+        "hours": 24,
+        "deadline_utc": "2026-09-05T09:30:00Z",
+        "recipient": "National CSIRT or competent authority"
+      },
+      {
+        "framework": "NIS2",
+        "obligation": "NIS2 full notification",
+        "hours": 72,
+        "deadline_utc": "2026-09-07T09:30:00Z",
+        "recipient": "National CSIRT or competent authority"
+      },
+      {
+        "framework": "NIS2",
+        "obligation": "NIS2 interim report",
+        "hours": 720,
+        "deadline_utc": "2026-10-04T09:30:00Z",
+        "recipient": "National CSIRT or competent authority"
+      }
+    ],
+    "control_failures": [
+      {
+        "indicator": "overprivileged_identity",
+        "failed_control": "Access control",
+        "references": [
+          "ISO 27001 A.9.2",
+          "SOC 2 CC6.3",
+          "PCI-DSS Req 7"
+        ]
+      },
+      {
+        "indicator": "mfa_not_enforced",
+        "failed_control": "Authentication control",
+        "references": [
+          "SOC 2 CC6.1",
+          "ISO 27001 A.9.4",
+          "PCI-DSS Req 8.3"
+        ]
+      },
+      {
+        "indicator": "data_exfiltrated",
+        "failed_control": "Data loss prevention",
+        "references": [
+          "GDPR Art 32",
+          "ISO 27001 A.13"
+        ]
+      },
+      {
+        "indicator": "evidence_chain_incomplete",
+        "failed_control": "Audit logging",
+        "references": [
+          "PCI-DSS Req 10",
+          "ISO 27001 A.12.4"
+        ]
+      }
+    ],
+    "materiality": "material: confirmed breach involving regulated data; notification obligations apply",
+    "shortest_clock_hours": 0
+  },
+  "mitre_ttps": [],
+  "affected_assets": [
+    "customer-portal-db"
+  ]
+}

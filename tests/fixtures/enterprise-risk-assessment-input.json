@@ -1,0 +1,5 @@
+{"organization":"ACME Corp","scenarios":[
+ {"name":"Ransomware halts production","ale":14000000},
+ {"name":"PII breach (2M records)","tef":0.5,"plm":6000000},
+ {"name":"Insider data theft","ale":450000},
+ {"name":"Phishing account takeover","ale":80000}]}

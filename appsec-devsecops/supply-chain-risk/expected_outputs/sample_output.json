@@ -1,0 +1,174 @@
+{
+  "agent_slug": "supply-chain-risk",
+  "intent_type": "block",
+  "action": "Block 3 package(s) in registry policy before the next build: xz-utils-node@5.6.1 (takeover), auth-core@9.9.9 (dependency_confusion), requesrs@2.31.0 (typosquatting). Policy change; requires security_director approval. Close the build-integrity gaps: Build artifacts cryptographically signed (Sigstore/cosign); Provenance attestation (SLSA 2+); Dependency pinning (exact versions, not ranges) and 2 more.",
+  "rationale": "acme/payments-service (npm cyclonedx-1.5): risk scored per component with the SKILL.md weights (CVE +40, KEV +60, abandoned +20, single maintainer +15, new maintainer +25; binary, obfuscation, typosquat and dependency confusion are immediate blocks). 3 block recommendation(s), 6 package(s) above informational. Build integrity 38/100 at SLSA 1. Confidence factors: base 0.55 for a declared SBOM, lock file committed (+0.10), CVE data supplied per component (+0.15), maintenance metadata supplied (+0.07).",
+  "confidence": 0.87,
+  "severity": "critical",
+  "key_findings": [
+    "8 component(s): 5 direct, 3 transitive; 2 with a known CVE, 1 in CISA KEV, 1 abandoned",
+    "xz-utils-node@5.6.1 critical (takeover, score 100): known CVE (+40); CISA KEV (+60); single maintainer (+15); new maintainer <180d (+25); unexplained binary added in release -> block",
+    "auth-core@9.9.9 critical (dependency_confusion, score 40): single maintainer (+15); new maintainer <180d (+25); dependency confusion: public package shadows an internal package name -> block",
+    "requesrs@2.31.0 critical (typosquatting, score 15): single maintainer (+15); typosquat of requests -> block",
+    "lodash@4.17.20 medium (cve, score 40): known CVE (+40) -> update",
+    "left-pad-legacy@1.3.0 medium (abandoned, score 35): abandoned >2y (+20); single maintainer (+15) -> replace",
+    "Build integrity 38/100 (3/8 checklist items), SLSA level 1; below SLSA 2, artifact provenance cannot be verified",
+    "2 licence issue(s): left-pad-legacy@1.3.0: WTFPL: custom or unrecognised licence, legal review; mongo-enterprise-driver@6.0.0: SSPL-1.0: copyleft, commercial-use violation"
+  ],
+  "evidence_references": [
+    {
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2024-3094",
+      "ref": "xz-utils-node@5.6.1",
+      "quote": "CVE-2024-3094 (CISA KEV)"
+    },
+    {
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2021-23337",
+      "ref": "lodash@4.17.20",
+      "quote": "CVE-2021-23337"
+    },
+    {
+      "source": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "ref": "CISA Known Exploited Vulnerabilities catalogue",
+      "quote": "1 component(s) listed"
+    },
+    {
+      "source": "https://slsa.dev/spec/v1.0/levels",
+      "ref": "SLSA level 1 declared for acme/payments-service"
+    },
+    {
+      "source": "local://tests/fixtures/supply-chain-risk-input.json",
+      "ref": "SBOM descriptor analysed"
+    },
+    {
+      "source": "local://appsec-devsecops/supply-chain-risk/SKILL.md",
+      "ref": "Dependency Risk Scoring, License Risk and SLSA checklist tables"
+    }
+  ],
+  "next_agents": [
+    "vulnerability-management",
+    "build-integrity",
+    "findings-tracker"
+  ],
+  "human_approval_required": true,
+  "timestamp_utc": "2026-09-04T21:20:13Z",
+  "sbom_analysis": {
+    "total_components": 8,
+    "direct_dependencies": 5,
+    "transitive_dependencies": 3,
+    "components_with_cve": 2,
+    "cisa_kev_components": 1,
+    "abandoned_packages": 1,
+    "license_violations": [
+      "left-pad-legacy@1.3.0: WTFPL: custom or unrecognised licence, legal review",
+      "mongo-enterprise-driver@6.0.0: SSPL-1.0: copyleft, commercial-use violation"
+    ]
+  },
+  "high_risk_packages": [
+    {
+      "package": "xz-utils-node",
+      "version": "5.6.1",
+      "direct": false,
+      "risk_type": "takeover",
+      "severity": "critical",
+      "risk_score": 100,
+      "cve_id": "CVE-2024-3094",
+      "action": "block",
+      "factors": [
+        "known CVE (+40)",
+        "CISA KEV (+60)",
+        "single maintainer (+15)",
+        "new maintainer <180d (+25)",
+        "unexplained binary added in release"
+      ]
+    },
+    {
+      "package": "auth-core",
+      "version": "9.9.9",
+      "direct": false,
+      "risk_type": "dependency_confusion",
+      "severity": "critical",
+      "risk_score": 40,
+      "cve_id": null,
+      "action": "block",
+      "factors": [
+        "single maintainer (+15)",
+        "new maintainer <180d (+25)",
+        "dependency confusion: public package shadows an internal package name"
+      ]
+    },
+    {
+      "package": "requesrs",
+      "version": "2.31.0",
+      "direct": true,
+      "risk_type": "typosquatting",
+      "severity": "critical",
+      "risk_score": 15,
+      "cve_id": null,
+      "action": "block",
+      "factors": [
+        "single maintainer (+15)",
+        "typosquat of requests"
+      ]
+    },
+    {
+      "package": "lodash",
+      "version": "4.17.20",
+      "direct": true,
+      "risk_type": "cve",
+      "severity": "medium",
+      "risk_score": 40,
+      "cve_id": "CVE-2021-23337",
+      "action": "update",
+      "factors": [
+        "known CVE (+40)"
+      ]
+    },
+    {
+      "package": "left-pad-legacy",
+      "version": "1.3.0",
+      "direct": false,
+      "risk_type": "abandoned",
+      "severity": "medium",
+      "risk_score": 35,
+      "cve_id": null,
+      "action": "replace",
+      "factors": [
+        "abandoned >2y (+20)",
+        "single maintainer (+15)"
+      ]
+    },
+    {
+      "package": "mongo-enterprise-driver",
+      "version": "6.0.0",
+      "direct": true,
+      "risk_type": "license",
+      "severity": "medium",
+      "risk_score": 0,
+      "cve_id": null,
+      "action": "review",
+      "factors": []
+    }
+  ],
+  "build_integrity_score": 38,
+  "build_integrity_gaps": [
+    "Build artifacts cryptographically signed (Sigstore/cosign)",
+    "Provenance attestation (SLSA 2+)",
+    "Dependency pinning (exact versions, not ranges)",
+    "Private registry with allowlist",
+    "No direct internet access from build environment"
+  ],
+  "slsa_level": 1,
+  "blocking_required": true,
+  "requires_approval": true,
+  "approver_roles": [
+    "security_director"
+  ],
+  "mutating_category": "policy_change",
+  "mitre_ttps": [
+    "T1195.001",
+    "T1195.002"
+  ],
+  "affected_assets": [
+    "acme/payments-service"
+  ]
+}

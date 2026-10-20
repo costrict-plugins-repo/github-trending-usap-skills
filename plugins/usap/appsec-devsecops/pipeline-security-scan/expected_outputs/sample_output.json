@@ -1,0 +1,133 @@
+{
+  "agent_slug": "pipeline-security-scan",
+  "intent_type": "analyze",
+  "action": "Remove 3 hardcoded secret(s) from the pipeline and rotate them (the committed values are compromised); Pin 4 third-party action(s) to full commit SHAs; Add SAST, secrets scanning stage(s) on every PR; Set least-privilege permissions (contents: read by default); Add signing, SBOM and provenance steps and pin images by digest.",
+  "rationale": "Configuration scan of .github/workflows/ci.yml (github_actions) against the SKILL.md categories: secrets in pipeline, SAST/SCA gaps, artifact integrity, permissions, third-party pinning. Secrets are exact-pattern or high-entropy assignments to secret-named variables, placeholders excluded; values are redacted. Triggers: pull_request, push. Confidence factors: base 0.60 for a parsed pipeline, job and step definitions supplied (+0.15), security stage inventory supplied (+0.12).",
+  "confidence": 0.87,
+  "severity": "critical",
+  "key_findings": [
+    "github_actions .github/workflows/ci.yml in acme/payments-service: 2 job(s), 8 step(s) scanned; 3 secret(s), 2 missing security stage(s), 4 integrity gap(s), 1 permission issue(s), 4 unpinned action(s)",
+    "Secret (high_entropy_assignment) in .github/workflows/ci.yml env variable PAYMENT_GATEWAY_SECRET: pg_9f8\u2026Qx",
+    "Secret (bearer_token) in job build step 5 (notify) run: Bearer\u2026fe",
+    "Secret (high_entropy_assignment) in job test env variable JWT_SIGNING_SECRET: q9Zr7K\u2026Sc",
+    "Missing stage: SAST",
+    "Missing stage: secrets scanning",
+    "SCA / dependency scanning runs only on main; must run on every PR",
+    "Permissions: workflow permissions: write-all",
+    "Unpinned action: actions/checkout@v4 -> v4 is mutable; pin to a full commit SHA",
+    "Unpinned action: docker/build-push-action@v5 -> v5 is mutable; pin to a full commit SHA",
+    "Unpinned action: actions/checkout@v4 -> v4 is mutable; pin to a full commit SHA",
+    "Unpinned action: actions/dependency-review-action@main -> main is mutable; pin to a full commit SHA",
+    "Integrity: artifact signing (Sigstore/cosign) not configured",
+    "Integrity: SBOM generation not configured",
+    "Integrity: provenance attestation (SLSA) not configured",
+    "Integrity: job build: image pushed by mutable tag acme/payments-api:latest (pin by digest)"
+  ],
+  "evidence_references": [
+    {
+      "source": "local://tests/fixtures/pipeline-security-scan-input.json",
+      "ref": ".github/workflows/ci.yml env (PAYMENT_GATEWAY_SECRET)",
+      "quote": "high_entropy_assignment pg_9f8\u2026Qx"
+    },
+    {
+      "source": "local://tests/fixtures/pipeline-security-scan-input.json",
+      "ref": "job build step 5 (notify) run",
+      "quote": "bearer_token Bearer\u2026fe"
+    },
+    {
+      "source": "local://tests/fixtures/pipeline-security-scan-input.json",
+      "ref": "job test env (JWT_SIGNING_SECRET)",
+      "quote": "high_entropy_assignment q9Zr7K\u2026Sc"
+    },
+    {
+      "source": "local://tests/fixtures/pipeline-security-scan-input.json",
+      "ref": "actions/checkout@v4",
+      "quote": "mutable action reference"
+    },
+    {
+      "source": "local://tests/fixtures/pipeline-security-scan-input.json",
+      "ref": "docker/build-push-action@v5",
+      "quote": "mutable action reference"
+    },
+    {
+      "source": "local://tests/fixtures/pipeline-security-scan-input.json",
+      "ref": "actions/checkout@v4",
+      "quote": "mutable action reference"
+    },
+    {
+      "source": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+      "ref": "GitHub Actions security hardening: pin actions to a full-length commit SHA; set minimal permissions"
+    },
+    {
+      "source": "https://slsa.dev/spec/v1.0/requirements",
+      "ref": "SLSA requirements: provenance, signing"
+    },
+    {
+      "source": "local://appsec-devsecops/pipeline-security-scan/SKILL.md",
+      "ref": "scan categories applied"
+    }
+  ],
+  "next_agents": [
+    "secrets-exposure",
+    "build-integrity",
+    "supply-chain-risk"
+  ],
+  "human_approval_required": false,
+  "timestamp_utc": "2026-09-04T21:23:28Z",
+  "scan_results": {
+    "secrets_found": 3,
+    "secrets": [
+      {
+        "location": ".github/workflows/ci.yml env",
+        "variable": "PAYMENT_GATEWAY_SECRET",
+        "kind": "high_entropy_assignment",
+        "value_redacted": "pg_9f8\u2026Qx",
+        "confidence": 0.75
+      },
+      {
+        "location": "job build step 5 (notify) run",
+        "variable": null,
+        "kind": "bearer_token",
+        "value_redacted": "Bearer\u2026fe",
+        "confidence": 0.95
+      },
+      {
+        "location": "job test env",
+        "variable": "JWT_SIGNING_SECRET",
+        "kind": "high_entropy_assignment",
+        "value_redacted": "q9Zr7K\u2026Sc",
+        "confidence": 0.75
+      }
+    ],
+    "missing_security_stages": [
+      "SAST",
+      "secrets scanning"
+    ],
+    "stages_not_on_pull_requests": [
+      "SCA / dependency scanning runs only on main; must run on every PR"
+    ],
+    "artifact_integrity_gaps": [
+      "artifact signing (Sigstore/cosign) not configured",
+      "SBOM generation not configured",
+      "provenance attestation (SLSA) not configured",
+      "job build: image pushed by mutable tag acme/payments-api:latest (pin by digest)"
+    ],
+    "permission_issues": [
+      "workflow permissions: write-all"
+    ],
+    "unpinned_actions": [
+      "actions/checkout@v4 -> v4 is mutable; pin to a full commit SHA",
+      "docker/build-push-action@v5 -> v5 is mutable; pin to a full commit SHA",
+      "actions/checkout@v4 -> v4 is mutable; pin to a full commit SHA",
+      "actions/dependency-review-action@main -> main is mutable; pin to a full commit SHA"
+    ]
+  },
+  "mitre_ttps": [
+    "T1078.004",
+    "T1195.002",
+    "T1552.001"
+  ],
+  "affected_assets": [
+    "acme/payments-service:.github/workflows/ci.yml"
+  ]
+}

@@ -1,0 +1,1 @@
+{"incident_id":"INC-2026-0912","incident_type":"data_exfiltration","confirmed_impact":true,"spreading":false,"affected_hosts":["customer-portal-db"],"affected_accounts":["svc-portal-ro"]}

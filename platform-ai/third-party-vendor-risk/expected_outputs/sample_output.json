@@ -1,0 +1,51 @@
+{
+  "agent_slug": "third-party-vendor-risk",
+  "intent_type": "advise",
+  "action": "DataPipe Inc (tier 1): 2 critical evidence gap(s) \u2014 pentest, dpa. Withhold onboarding or plan offboarding (mutating, approval required).",
+  "rationale": "Each document is checked against the SKILL.md tiered matrix; a missing tier-1 SOC 2 or pen test is critical, as is a missing data-processing agreement when the vendor handles PII or PCI (GDPR Art. 28 / HIPAA BAA). Assessment is read-only; suspending or offboarding a vendor is a mutating action requiring approval.",
+  "confidence": 0.85,
+  "severity": "critical",
+  "key_findings": [
+    "DataPipe Inc: tier 1, PII/PCI=True; 3 gap(s) (2 critical)",
+    "critical missing pentest (required)",
+    "critical missing dpa (required (PII/PCI))",
+    "low missing iso27001 (preferred)"
+  ],
+  "evidence_references": [
+    {
+      "source": "local://tests/fixtures/third-party-vendor-risk-input.json",
+      "ref": "vendor documents"
+    },
+    {
+      "source": "local://platform-ai/third-party-vendor-risk/SKILL.md",
+      "ref": "tiered evidence and regulatory tables"
+    }
+  ],
+  "next_agents": [
+    "findings-tracker"
+  ],
+  "human_approval_required": false,
+  "timestamp_utc": "2026-09-05T08:52:08Z",
+  "tier": 1,
+  "gaps": [
+    {
+      "document": "pentest",
+      "requirement": "required",
+      "severity": "critical"
+    },
+    {
+      "document": "dpa",
+      "requirement": "required (PII/PCI)",
+      "severity": "critical"
+    },
+    {
+      "document": "iso27001",
+      "requirement": "preferred",
+      "severity": "low"
+    }
+  ],
+  "mitre_ttps": [],
+  "affected_assets": [
+    "DataPipe Inc"
+  ]
+}

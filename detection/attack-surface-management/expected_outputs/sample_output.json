@@ -1,0 +1,239 @@
+{
+  "agent_slug": "attack-surface-management",
+  "intent_type": "detect",
+  "action": "3 critical exposure(s) with a 24-hour SLA: Renew within 24 hours; page the certificate owner.; Remove from the internet or put behind SSO within 24 hours; then rotate any credential it exposes.",
+  "rationale": "Snapshot classified per the SKILL.md procedure: exposure verified by probing (unprobed claims downgraded to unknown), admin interfaces against the risk table, CNAME status against the takeover indicators, certificate expiry against the thresholds, inventory membership for shadow IT, trend against the previous snapshot, SLA per severity. Confidence factors: base 0.55 for a discovery snapshot, some exposure claims unprobed (+0.08), previous snapshot available for trend (+0.10), approved inventory supplied (+0.05).",
+  "confidence": 0.78,
+  "severity": "critical",
+  "key_findings": [
+    "acme: 8 asset(s) in snapshot, 6 verified internet-facing (previous 3): surface expanding; 8 finding(s): 3 critical, 3 high, 2 medium, 0 low",
+    "critical [certificate] certificate on api.acme.example expires in 5 day(s) -> SLA 2026-09-05T03:00:00Z",
+    "critical [admin_interface] jenkins on ci.acme.example reachable from the internet without authentication -> SLA 2026-09-05T03:00:00Z",
+    "critical [takeover] promo.acme.example CNAME to acme-promo-2024.herokuapp.com is 404: subdomain takeover candidate -> SLA 2026-09-05T03:00:00Z",
+    "high [shadow_it] acme-analytics-export (s3) is not in the approved inventory and is internet-facing -> SLA 2026-09-11T03:00:00Z",
+    "high [shadow_it] ci.acme.example is not in the approved inventory and is internet-facing -> SLA 2026-09-11T03:00:00Z",
+    "high [shadow_it] promo.acme.example is not in the approved inventory and is internet-facing -> SLA 2026-09-11T03:00:00Z",
+    "1 asset(s) claimed internet-facing without active probing, classified unknown until verified: grafana.acme.example"
+  ],
+  "evidence_references": [
+    {
+      "source": "local://tests/fixtures/attack-surface-management-input.json",
+      "ref": "api.acme.example (dns_enumeration, first seen 2025-02-01T00:00:00Z)",
+      "quote": "certificate on api.acme.example expires in 5 day(s)"
+    },
+    {
+      "source": "local://tests/fixtures/attack-surface-management-input.json",
+      "ref": "ci.acme.example (shodan, first seen 2026-09-03T21:14:00Z)",
+      "quote": "jenkins on ci.acme.example reachable from the internet without authentication"
+    },
+    {
+      "source": "local://tests/fixtures/attack-surface-management-input.json",
+      "ref": "promo.acme.example (passive_dns, first seen 2026-08-30T00:00:00Z)",
+      "quote": "promo.acme.example CNAME to acme-promo-2024.herokuapp.com is 404: subdomain takeover candidate"
+    },
+    {
+      "source": "local://tests/fixtures/attack-surface-management-input.json",
+      "ref": "acme-analytics-export (s3) (cloud_api, first seen 2026-09-02T12:00:00Z)",
+      "quote": "acme-analytics-export (s3) is not in the approved inventory and is internet-facing"
+    },
+    {
+      "source": "local://tests/fixtures/attack-surface-management-input.json",
+      "ref": "ci.acme.example (shodan, first seen 2026-09-03T21:14:00Z)",
+      "quote": "ci.acme.example is not in the approved inventory and is internet-facing"
+    },
+    {
+      "source": "local://tests/fixtures/attack-surface-management-input.json",
+      "ref": "promo.acme.example (passive_dns, first seen 2026-08-30T00:00:00Z)",
+      "quote": "promo.acme.example is not in the approved inventory and is internet-facing"
+    },
+    {
+      "source": "local://detection/attack-surface-management/references/classification-tables.md",
+      "ref": "exposure matrix, certificate thresholds, takeover indicators, admin interface risk"
+    },
+    {
+      "source": "https://attack.mitre.org/techniques/T1584/001/",
+      "ref": "Compromise Infrastructure: Domains (subdomain takeover)"
+    }
+  ],
+  "next_agents": [
+    "vulnerability-management",
+    "cloud-security-posture",
+    "iac-security"
+  ],
+  "human_approval_required": false,
+  "timestamp_utc": "2026-09-05T07:23:40Z",
+  "surface": {
+    "assets_total": 8,
+    "internet_facing_verified": 6,
+    "previous_internet_facing": 3,
+    "trend": "expanding",
+    "unverified_exposure_claims": [
+      "grafana.acme.example"
+    ],
+    "counts": {
+      "critical": 3,
+      "high": 3,
+      "medium": 2,
+      "low": 0,
+      "informational": 0
+    }
+  },
+  "findings": [
+    {
+      "asset_id": "A-002",
+      "asset": "api.acme.example",
+      "asset_type": "api",
+      "kind": "certificate",
+      "severity": "critical",
+      "exposure_class": "internet_facing",
+      "verified_by": "http_get",
+      "risk_score": 90.0,
+      "title": "certificate on api.acme.example expires in 5 day(s)",
+      "recommended_action": "Renew within 24 hours; page the certificate owner.",
+      "sla_deadline_utc": "2026-09-05T03:00:00Z",
+      "discovery_source": "dns_enumeration",
+      "first_seen_utc": "2025-02-01T00:00:00Z",
+      "cascade_to": [],
+      "mitre_technique": "T1608.003"
+    },
+    {
+      "asset_id": "A-004",
+      "asset": "ci.acme.example",
+      "asset_type": "admin_interface",
+      "kind": "admin_interface",
+      "severity": "critical",
+      "exposure_class": "internet_facing",
+      "verified_by": "http_get",
+      "risk_score": 90.0,
+      "title": "jenkins on ci.acme.example reachable from the internet without authentication",
+      "recommended_action": "Remove from the internet or put behind SSO within 24 hours; then rotate any credential it exposes.",
+      "sla_deadline_utc": "2026-09-05T03:00:00Z",
+      "discovery_source": "shodan",
+      "first_seen_utc": "2026-09-03T21:14:00Z",
+      "cascade_to": [
+        "vulnerability-management"
+      ],
+      "mitre_technique": "T1133"
+    },
+    {
+      "asset_id": "A-005",
+      "asset": "promo.acme.example",
+      "asset_type": "domain",
+      "kind": "takeover",
+      "severity": "critical",
+      "exposure_class": "internet_facing",
+      "verified_by": "http_get",
+      "risk_score": 90.0,
+      "title": "promo.acme.example CNAME to acme-promo-2024.herokuapp.com is 404: subdomain takeover candidate",
+      "recommended_action": "Remove the DNS record or reclaim the target within 24 hours.",
+      "sla_deadline_utc": "2026-09-05T03:00:00Z",
+      "discovery_source": "passive_dns",
+      "first_seen_utc": "2026-08-30T00:00:00Z",
+      "cascade_to": [],
+      "mitre_technique": "T1584.001"
+    },
+    {
+      "asset_id": "A-006",
+      "asset": "acme-analytics-export (s3)",
+      "asset_type": "cloud_resource",
+      "kind": "shadow_it",
+      "severity": "high",
+      "exposure_class": "internet_facing",
+      "verified_by": "http_get",
+      "risk_score": 60.0,
+      "title": "acme-analytics-export (s3) is not in the approved inventory and is internet-facing",
+      "recommended_action": "Register the asset with an owner or decommission it; shadow IT cannot be risk-accepted.",
+      "sla_deadline_utc": "2026-09-11T03:00:00Z",
+      "discovery_source": "cloud_api",
+      "first_seen_utc": "2026-09-02T12:00:00Z",
+      "cascade_to": [
+        "cloud-security-posture",
+        "iac-security"
+      ],
+      "mitre_technique": "T1133"
+    },
+    {
+      "asset_id": "A-004",
+      "asset": "ci.acme.example",
+      "asset_type": "admin_interface",
+      "kind": "shadow_it",
+      "severity": "high",
+      "exposure_class": "internet_facing",
+      "verified_by": "http_get",
+      "risk_score": 60.0,
+      "title": "ci.acme.example is not in the approved inventory and is internet-facing",
+      "recommended_action": "Register the asset with an owner or decommission it; shadow IT cannot be risk-accepted.",
+      "sla_deadline_utc": "2026-09-11T03:00:00Z",
+      "discovery_source": "shodan",
+      "first_seen_utc": "2026-09-03T21:14:00Z",
+      "cascade_to": [],
+      "mitre_technique": "T1133"
+    },
+    {
+      "asset_id": "A-005",
+      "asset": "promo.acme.example",
+      "asset_type": "domain",
+      "kind": "shadow_it",
+      "severity": "high",
+      "exposure_class": "internet_facing",
+      "verified_by": "http_get",
+      "risk_score": 60.0,
+      "title": "promo.acme.example is not in the approved inventory and is internet-facing",
+      "recommended_action": "Register the asset with an owner or decommission it; shadow IT cannot be risk-accepted.",
+      "sla_deadline_utc": "2026-09-11T03:00:00Z",
+      "discovery_source": "passive_dns",
+      "first_seen_utc": "2026-08-30T00:00:00Z",
+      "cascade_to": [],
+      "mitre_technique": "T1133"
+    },
+    {
+      "asset_id": "A-003",
+      "asset": "vpn.acme.example",
+      "asset_type": "service",
+      "kind": "certificate",
+      "severity": "medium",
+      "exposure_class": "internet_facing",
+      "verified_by": "tcp_connect",
+      "risk_score": 30.0,
+      "title": "wildcard certificate in use on internet-facing vpn.acme.example",
+      "recommended_action": "Review whether a wildcard is needed on a high-risk host.",
+      "sla_deadline_utc": "2026-10-04T03:00:00Z",
+      "discovery_source": "dns_enumeration",
+      "first_seen_utc": "2024-11-20T00:00:00Z",
+      "cascade_to": [],
+      "mitre_technique": "T1608.003"
+    },
+    {
+      "asset_id": "A-007",
+      "asset": "grafana.acme.example",
+      "asset_type": "service",
+      "kind": "shadow_it",
+      "severity": "medium",
+      "exposure_class": "unknown",
+      "verified_by": "none",
+      "risk_score": 10.0,
+      "title": "grafana.acme.example is not in the approved inventory",
+      "recommended_action": "Register the asset with an owner or decommission it; shadow IT cannot be risk-accepted.",
+      "sla_deadline_utc": "2026-10-04T03:00:00Z",
+      "discovery_source": "dns_enumeration",
+      "first_seen_utc": "2026-09-04T01:30:00Z",
+      "cascade_to": [],
+      "mitre_technique": "T1133"
+    }
+  ],
+  "mitre_ttps": [
+    "T1133",
+    "T1584.001",
+    "T1608.003"
+  ],
+  "affected_assets": [
+    "api.acme.example",
+    "ci.acme.example",
+    "promo.acme.example",
+    "acme-analytics-export (s3)",
+    "ci.acme.example",
+    "promo.acme.example",
+    "vpn.acme.example",
+    "grafana.acme.example"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "agent_slug": "endpoint-os-security",
+  "intent_type": "detect",
+  "action": "1 critical endpoint indicator(s) (credential dumping / injection); isolate and collect memory from fin-ws-04.",
+  "rationale": "Each indicator is scored against the SKILL.md endpoint ATT&CK table: credential dumping and process injection are critical; persistence and DLL hijack are high; LOLBins are medium. Endpoints without EDR are a blind spot. Read-only; host isolation is a downstream gated action.",
+  "confidence": 0.85,
+  "severity": "critical",
+  "key_findings": [
+    "3 endpoint(s): 3 indicator(s) (1 critical, 1 high); 1 without EDR",
+    "critical fin-ws-04 (windows): credential_dumping [T1003]",
+    "high fin-ws-04 (windows): registry_persistence [T1547.001]",
+    "medium build-lin-02 (linux): lolbin_execution [T1218]",
+    "No EDR on: kiosk-01"
+  ],
+  "evidence_references": [
+    {
+      "source": "local://tests/fixtures/endpoint-os-security-input.json",
+      "ref": "endpoint telemetry"
+    },
+    {
+      "source": "local://cloud-infra/endpoint-os-security/SKILL.md",
+      "ref": "MITRE ATT&CK endpoint indicator table and EDR coverage"
+    }
+  ],
+  "next_agents": [
+    "incident-commander",
+    "forensics"
+  ],
+  "human_approval_required": false,
+  "timestamp_utc": "2026-09-05T08:41:41Z",
+  "findings": [
+    {
+      "host": "fin-ws-04",
+      "os": "windows",
+      "indicator": "credential_dumping",
+      "severity": "critical",
+      "mitre": "T1003"
+    },
+    {
+      "host": "fin-ws-04",
+      "os": "windows",
+      "indicator": "registry_persistence",
+      "severity": "high",
+      "mitre": "T1547.001"
+    },
+    {
+      "host": "build-lin-02",
+      "os": "linux",
+      "indicator": "lolbin_execution",
+      "severity": "medium",
+      "mitre": "T1218"
+    }
+  ],
+  "mitre_ttps": [
+    "T1003",
+    "T1218",
+    "T1547.001"
+  ],
+  "affected_assets": [
+    "build-lin-02",
+    "fin-ws-04"
+  ]
+}

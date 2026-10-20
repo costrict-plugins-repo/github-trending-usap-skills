@@ -1,0 +1,30 @@
+{
+  "agent_slug": "tool-execution-broker",
+  "intent_type": "report",
+  "action": "AUTHORIZE REC-4410: all pre-execution checks passed; the connector may execute the approved action.",
+  "rationale": "The request is validated against the SKILL.md checklist in order \u2014 a present and unexpired signed approval, an authorized approver, action in scope, no production restriction, no duplicate execution, a cleared guardrail, and a reachable connector. The first failing check rejects the call. Validation is read-only; this tool never executes the action itself.",
+  "confidence": 0.95,
+  "severity": "informational",
+  "key_findings": [
+    "recommendation REC-4410: broker_result=authorized",
+    "8/8 checks passed"
+  ],
+  "evidence_references": [
+    {
+      "source": "local://tests/fixtures/tool-execution-broker-input.json",
+      "ref": "tool-call request and checks"
+    },
+    {
+      "source": "local://platform-ai/tool-execution-broker/SKILL.md",
+      "ref": "pre-execution authorization checklist"
+    }
+  ],
+  "next_agents": [],
+  "human_approval_required": false,
+  "timestamp_utc": "2026-09-05T08:52:08Z",
+  "broker_result": "authorized",
+  "mitre_ttps": [],
+  "affected_assets": [
+    "REC-4410"
+  ]
+}
